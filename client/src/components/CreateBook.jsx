@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useState } from "preact/hooks";
+import { useNavigate } from "react-router-dom";
 
 function CreateBook() {
+  const navigate=useNavigate()
   const [values, setValues] = useState({
     publisher: "",
     name: "",
@@ -10,15 +12,19 @@ function CreateBook() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Submitting values:", values); // Log the values before submission
+
     axios.post("http://localhost:3000/create", values)
       .then((res) => {
         if (res.data.Error) {
-          console.error(res.data.Error);
+          console.error("API Error:", res.data.Error); // Log the detailed error message
         } else {
-          console.log(res.data);
+          console.log("API Response:", res.data);
+          navigate("/")
+
         }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error("Axios Error:", err.response ? err.response.data : err));
   };
 
   return (
